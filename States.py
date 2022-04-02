@@ -9,3 +9,5 @@ class Step(StatesGroup):
     genre_state = State()
     author_state = State()
     actor_state = State()
+    feedback_state = State()
+    for_ban_state = State()

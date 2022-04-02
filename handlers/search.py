@@ -1,28 +1,13 @@
-import sqlite3
 from aiogram import types
-from aiogram.dispatcher import FSMContext
-from keyboard import create_keyboard, affix_keyboard
-from States import Step
+from keyboard import *
 from format_video_message import message_video
+from aiogram.dispatcher import FSMContext
 
 
 async def search(message: types.Message, state: FSMContext):
     list_mode = ['title', 'genres', 'author', 'year', 'actors']
     list_queries = list()
     message_l = str(message.text)
-    if message.text == 'Выход на главную':
-        await Step.main_state.set()
-        kb = create_keyboard()
-        await message.answer('Главная', reply_markup=kb)
-        return None
-    if message.text == 'Добавить/удалить критерий поиска':
-        cur_state = await state.get_state()
-        kb = affix_keyboard(cur_state.split(':')[1])
-        await message.answer('Введите один из предложенных критериев и нажмите назад.', reply_markup=kb)
-        async with state.proxy() as data:
-            data['prev_state'] = cur_state.split(':')[1]
-        await Step.add_affix.set()
-        return None
     async with state.proxy() as data:
         for mode in list_mode:
             if mode in data.keys():

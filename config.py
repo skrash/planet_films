@@ -1,2 +1,1 @@
-bot_token = '5099859012:AAEaPWtIpgu_4h2QmroXjOFXj3wZMrvwMT0'
-# step = ['Общий поиск', 'Случайный фильм', 'Поиск по жанру', 'Главная', 'Поиск по режиссёру', 'Поиск по году', 'По актёру'] # Топы
+bot_token = '5184987686:AAEDYImEShAtbgiZ1DAIhljQTPn2dAacVaw'
