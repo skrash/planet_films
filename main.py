@@ -22,7 +22,7 @@ async def start_recomendation(message: types.Message):
     con = sqlite3.connect('db.sqlite3')
     with con:
         cur = con.cursor()
-        top3 = cur.execute('SELECT title, author, actors, url, description,alter_name, year FROM films_films where year = 2022 order by likes limit 3').fetchall()
+        top3 = cur.execute('SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films where year = 2022 order by likes limit 3').fetchall()
     for i in top3:
         await message_video(message, i)
 
@@ -170,6 +170,8 @@ if __name__ == '__main__':
     dp.register_callback_query_handler(del_affix_year, text='del_affix_year', state='*')
     dp.register_callback_query_handler(del_affix_actors, text='del_affix_actors', state='*')
     dp.register_callback_query_handler(back_on_affix, text='back_on_affix', state='*')
+    dp.register_callback_query_handler(affix_raiting, text='affix_raiting', state='*')
+    dp.register_callback_query_handler(del_affix_raiting, text='del_affix_raiting', state='*')
 
     dp.register_callback_query_handler(user_like_vote, text='like', state='*')
     dp.register_callback_query_handler(user_dislike_vote, text='dislike', state='*')

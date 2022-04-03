@@ -6,6 +6,7 @@ from format_video_message import message_video
 
 async def template(query, message, state):
     list_mode = ['title', 'genres', 'author', 'year', 'actors']
+    raiting_order = False
     list_queries = list()
     message_l = str(message.text)
     if message.text == 'Выход на главную':
@@ -26,30 +27,58 @@ async def template(query, message, state):
             if mode in data.keys():
                 list_queries.append(mode)
                 list_queries.append(data[mode])
+        if 'raiting' in data.keys():
+            raiting_order = True
     con = sqlite3.connect('db.sqlite3')
     with con:
         cur = con.cursor()
         if len(list_queries) == 0:
-            query = cur.execute(
-                f"SELECT title, author, actors, url, description,alter_name, year FROM films_films WHERE {query} like ?",
-                ('%' + message_l + '%',)).fetchall()
+            if not raiting_order:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ?",
+                    ('%' + message_l + '%',)).fetchall()
+            else:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? order by raiting",
+                    ('%' + message_l + '%',)).fetchall()
         elif len(list_queries) == 2:
-            query = cur.execute(
-                f"SELECT title, author, actors, url, description,alter_name, year FROM films_films WHERE {query} like ? and {list_queries[0]} like ?",
-                ('%' + message_l + '%', list_queries[1])).fetchall()
+            if not raiting_order:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ?",
+                    ('%' + message_l + '%', list_queries[1])).fetchall()
+            else:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? order by raiting",
+                    ('%' + message_l + '%', list_queries[1])).fetchall()
         elif len(list_queries) == 4:
-            query = cur.execute(
-                f"SELECT title, author, actors, url, description,alter_name, year FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ?",
-                ('%' + message_l + '%', list_queries[1], list_queries[3])).fetchall()
+            if not raiting_order:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ?",
+                    ('%' + message_l + '%', list_queries[1], list_queries[3])).fetchall()
+            else:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? order by raiting",
+                    ('%' + message_l + '%', list_queries[1], list_queries[3])).fetchall()
         elif len(list_queries) == 6:
-            query = cur.execute(
-                f"SELECT title, author, actors, url, description,alter_name, year FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? and {list_queries[4]} like ?",
-                ('%' + message_l + '%', list_queries[1], list_queries[3], list_queries[5])).fetchall()
+            if not raiting_order:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? and {list_queries[4]} like ?",
+                    ('%' + message_l + '%', list_queries[1], list_queries[3], list_queries[5])).fetchall()
+            else:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? and {list_queries[4]} like ? order by raiting",
+                    ('%' + message_l + '%', list_queries[1], list_queries[3], list_queries[5])).fetchall()
         elif len(list_queries) == 8:
-            query = cur.execute(
-                f"SELECT title, author, actors, url, description,alter_name, year FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? and {list_queries[4]} like ? and {list_queries[6]} like ?",
-                ('%' + message_l + '%', list_queries[1], list_queries[3], list_queries[5],
-                 list_queries[7])).fetchall()
+            if not raiting_order:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? and {list_queries[4]} like ? and {list_queries[6]} like ?",
+                    ('%' + message_l + '%', list_queries[1], list_queries[3], list_queries[5],
+                     list_queries[7])).fetchall()
+            else:
+                query = cur.execute(
+                    f"SELECT title, author, actors, url, description,alter_name, year, raiting FROM films_films WHERE {query} like ? and {list_queries[0]} like ? and {list_queries[2]} like ? and {list_queries[4]} like ? and {list_queries[6]} like ? order by raiting",
+                    ('%' + message_l + '%', list_queries[1], list_queries[3], list_queries[5],
+                     list_queries[7])).fetchall()
         if len(query) > 20:
             query = query[:20]
             await message.answer(

@@ -18,4 +18,5 @@ async def message_video(message: aiogram.types.Message, query):
     result += f'{query[4]}\n'
     result += f'Альтернативное название: {query[5]}\n'
     result += f'Год выхода: {query[6]}\n'
+    result += f'Рейтинг: {query[7]}\n'
     await message.answer(result, reply_markup=kb)

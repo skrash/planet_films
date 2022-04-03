@@ -122,6 +122,17 @@ async def del_affix_actors(callback_query: CallbackQuery, state: FSMContext):
         del data['actors']
 
 
+async def affix_raiting(callback_query: CallbackQuery, state: FSMContext):
+    async with state.proxy() as data:
+        data['raiting'] = ''
+    await callback_query.message.answer('Готово!')
+
+
+async def del_affix_raiting(callback_query: CallbackQuery, state: FSMContext):
+    async with state.proxy() as data:
+        del data['raiting']
+
+
 async def back_on_affix(callback_query: CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         if data['prev_state'] == 'search_state':
