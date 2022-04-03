@@ -27,7 +27,7 @@ async def start_recomendation(message: types.Message):
         await message_video(message, i)
 
 
-async def helper(message: types.Message, state: FSMContext):
+async def commands_list(message: types.Message, state: FSMContext):
     state_str = await state.get_state()
     if state_str is None:
         kb = create_keyboard()
@@ -67,6 +67,10 @@ async def helper(message: types.Message, state: FSMContext):
             await message.answer('Введите id пользователя.', reply_markup=kb)
 
 
+async def helper(message: types.Message):
+    await message.answer('Список доступных команд: \n /start \n /keyboard\n')
+
+
 async def feedback_msg(message: types.Message):
     con = sqlite3.connect('db.sqlite3')
     with con:
@@ -96,7 +100,7 @@ async def start(message: types.Message):
     if user is None:
         with con2:
             cur2 = con2.cursor()
-            cur2.execute(f'INSERT INTO users VALUES (NULL, {message.chat.id}, NULL)')
+            cur2.execute(f'INSERT INTO users VALUES (NULL, {message.chat.id}, 0)')
             con2.commit()
     if message.from_user.id == 871563164:
         kb = create_keyboard_admin()
@@ -144,6 +148,7 @@ if __name__ == '__main__':
     dp.register_message_handler(who_ban, state=Step.for_ban_state)
 
     dp.register_message_handler(helper, commands='help', state='*')
+    dp.register_message_handler(commands_list, commands='keyboard', state='*')
     dp.register_callback_query_handler(go_to_random, text='random_films', state='*')
     dp.register_callback_query_handler(go_to_search, text='main_search', state='*')
     dp.register_callback_query_handler(go_to_genre, text='search_from_genre', state='*')
