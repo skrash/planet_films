@@ -14,6 +14,7 @@ def create_keyboard():
     button_search_from_year = InlineKeyboardButton('Поиск по году', callback_data='search_from_year')
     button_search_from_actor = InlineKeyboardButton('По актёру', callback_data='search_from_actor')
     button_feedback = InlineKeyboardButton('Отправить сообщение разработчику', callback_data='feedback')
+    button_donate = InlineKeyboardButton('Пожертвовать', callback_data='donate')
     kb.add(button_main_search)
     kb.add(button_search_from_genre)
     kb.add(button_search_random)
@@ -21,6 +22,7 @@ def create_keyboard():
     kb.add(button_search_from_year)
     kb.add(button_search_from_actor)
     kb.add(button_feedback)
+    kb.add(button_donate)
     return kb
 
 

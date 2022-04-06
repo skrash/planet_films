@@ -55,6 +55,14 @@ async def go_to_genre(callback_query: CallbackQuery):
     await Step.genre_state.set()
 
 
+async def donate(callback_query: CallbackQuery):
+    kb = InlineKeyboardMarkup()
+    cancel_button = InlineKeyboardButton('Выход на главную', callback_data='go_to_main')
+    kb.add(cancel_button)
+    await callback_query.message.answer('Введите сумму пожертвования в рублях.', reply_markup=kb)
+    await Step.donate_state.set()
+
+
 async def go_to_author(callback_query: CallbackQuery):
     kb = back_keyboard()
     await callback_query.message.answer('Напишите имя автора и мы найдем фильм для Вас!', reply_markup=kb)

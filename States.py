@@ -11,3 +11,4 @@ class Step(StatesGroup):
     actor_state = State()
     feedback_state = State()
     for_ban_state = State()
+    donate_state = State()

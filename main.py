@@ -11,6 +11,8 @@ from go_to import *
 from keyboard import *
 from aiogram.dispatcher import FSMContext
 import sqlite3
+from handlers.donate import donation, process_pre_checkout_query, process_successful_payment
+from aiogram.types import ContentType
 
 
 bot = Bot(token=bot_token)
@@ -65,6 +67,11 @@ async def commands_list(message: types.Message, state: FSMContext):
             button_back = InlineKeyboardButton('Назад', go_to_main)
             kb.add(button_back)
             await message.answer('Введите id пользователя.', reply_markup=kb)
+        elif state_str == 'donate_state':
+            kb = InlineKeyboardMarkup()
+            cancel_button = InlineKeyboardButton('Выход на главную', callback_data='go_to_main')
+            kb.add(cancel_button)
+            await message.answer('Введите сумму пожертвования.', reply_markup=kb)
 
 
 async def helper(message: types.Message):
@@ -142,11 +149,24 @@ async def who_ban(message: types.Message):
 
 
 if __name__ == '__main__':
+    con = sqlite3.connect('db.sqlite3')
+    with con:
+        cur = con.cursor()
+        cur.execute('CREATE TABLE IF NOT EXISTS payment (id_payment INTEGER PRIMARY KEY AUTOINCREMENT,tg_id INTEGER, status INTEGER, telegram_payment_charge_id VARCHAR(30), provider_payment_charge_id VARCHAR(50), price INTEGER)')
+        con.commit()
+
+    # payment
+    dp.register_pre_checkout_query_handler(process_pre_checkout_query, lambda query: True, state='*')
+    dp.register_message_handler(process_successful_payment, content_types=ContentType.SUCCESSFUL_PAYMENT, state='*')
+
+    # admin
     dp.register_callback_query_handler(feedback, text='feedback', state='*')
     dp.register_message_handler(feedback_msg, state=Step.feedback_state)
     dp.register_callback_query_handler(for_ban, text='ban', state='*')
     dp.register_message_handler(who_ban, state=Step.for_ban_state)
+    dp.register_callback_query_handler(donate, text='donate', state='*')
 
+    # helper, goto
     dp.register_message_handler(helper, commands='help', state='*')
     dp.register_message_handler(commands_list, commands='keyboard', state='*')
     dp.register_callback_query_handler(go_to_random, text='random_films', state='*')
@@ -182,5 +202,6 @@ if __name__ == '__main__':
     dp.register_message_handler(actor_search, state=Step.actor_state)
     dp.register_message_handler(search, state=Step.search_state)
     dp.register_message_handler(search_year, state=Step.search_from_year_state)
+    dp.register_message_handler(donation, state=Step.donate_state)
     dp.register_message_handler(start, commands='start')
     executor.start_polling(dispatcher=dp, skip_updates=True)
