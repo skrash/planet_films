@@ -141,11 +141,16 @@ async def who_ban(message: types.Message):
     await message.answer('SUCCESS!')
 
 
+async def donate(callback_query: CallbackQuery):
+    await callback_query.message.answer('Номер карты для перевода - 5559 4938 0018 1670 Альфа Банк. Номер телефона для перевода СБП 89005093763')
+
+
 if __name__ == '__main__':
     dp.register_callback_query_handler(feedback, text='feedback', state='*')
     dp.register_message_handler(feedback_msg, state=Step.feedback_state)
     dp.register_callback_query_handler(for_ban, text='ban', state='*')
     dp.register_message_handler(who_ban, state=Step.for_ban_state)
+    dp.register_callback_query_handler(donate, text='donate', state='*')
 
     dp.register_message_handler(helper, commands='help', state='*')
     dp.register_message_handler(commands_list, commands='keyboard', state='*')
